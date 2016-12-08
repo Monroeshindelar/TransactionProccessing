@@ -1,6 +1,6 @@
 #include "manager.h"
 
-
+//Hello world
 Manager::Manager() {
 
 }
