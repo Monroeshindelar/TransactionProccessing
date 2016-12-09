@@ -26,7 +26,7 @@ bool Manager::takeTransactions(ifstream& file) {
 	char operation;
 	string i;
 	string i2 = "";
-	int amount;
+	int amount = 0;
 	while (file >> operation >> i) {
 		if (operation == 'D' || operation == 'W') file >> amount;
 		else if (operation == 'M') file >> amount >> i2;
@@ -62,7 +62,7 @@ void Manager::performTransactions() {
 		if (check == 'H') undo.push(current);
 		transactionQueue.pop();
 	}
-	firm.display();
+	cout << firm << endl;
 }
 
 bool Manager::buyShares(string ID, int acc, int amount) {
@@ -153,5 +153,6 @@ bool Manager::redoLastTransaction() {
 }
 
 ostream& operator<<(ostream& out, const Manager& target) {
+	out << target.firm;
 	return out;
 }
