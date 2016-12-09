@@ -27,9 +27,9 @@ bool Manager::takeTransactions(ifstream& file) {
 	string i;
 	string i2 = "";
 	int amount;
-	while (!file.eof()) {
-		file >> operation >> i >> amount;
-		if (operation == 'M') file >> i2;
+	while (file >> operation >> i) {
+		if (operation == 'D' || operation == 'W') file >> amount;
+		else if (operation == 'M') file >> amount >> i2;
 		Transaction newTrans(operation, i, i2, amount);
 		transactionQueue.push(newTrans);
 	}
@@ -42,43 +42,51 @@ void Manager::performTransactions() {
 		string clientID = current.getID().substr(0, 4);
 		int account = (current.getID().at(current.getID().length() - 1)) - '0';
 		switch (current.getOp()) {
-			case 'D':
-				buyShares(clientID, account, current.getAmount());
-				break;
-			case 'W':
-				sellShares(clientID, account, current.getAmount());
-				break;
-			case 'M':
-				moveShares(clientID, account, current.getMoveToID(), current.getAmount());
-				break;
-			case 'H':
-				viewHistory(clientID);
-				break;
-			default: 
-				cout << "Incorrect operation" << endl;
-				break;
+		case 'D':
+			buyShares(clientID, account, current.getAmount());
+			break;
+		case 'W':
+			sellShares(clientID, account, current.getAmount());
+			break;
+		case 'M':
+			moveShares(clientID, account, current.getMoveToID(), current.getAmount());
+			break;
+		case 'H':
+			viewHistory(clientID);
+			break;
+		default:
+			cout << "Incorrect operation" << endl;
+			break;
 		}
 		char check = current.getOp();
 		if (check == 'H') undo.push(current);
 		transactionQueue.pop();
+
 	}
+	firm.display();
 }
 
 bool Manager::buyShares(string ID, int acc, int amount) {
 	int temp[10];
 	Client toFind("", "", ID, temp);
-	Client theClient;
+	Client* theClient;
 	bool success = firm.retrieve(toFind, theClient);
-	theClient.addToAccount(acc, amount);
+	if (success) {
+		theClient->addToAccount(acc, amount);
+		theClient->addToHistory(ID, acc, "", amount, 'D');
+	}
 	return success;
 }
 
 bool Manager::sellShares(string ID, int acc, int amount) {
 	int temp[10];
 	Client toFind("", "", ID, temp);
-	Client theClient;
+	Client* theClient;
 	bool success = firm.retrieve(toFind, theClient);
-	theClient.subtractFromAccount(acc, amount);
+	if (success) {
+		theClient->subtractFromAccount(acc, amount);
+		theClient->addToHistory(ID, acc, "", amount, 'W');
+	}
 	return success;
 }
 
@@ -93,9 +101,9 @@ bool Manager::moveShares(string ID, int acc, string moveToID, int amount) {
 bool Manager::viewHistory(string ID) {
 	int temp[10];
 	Client toFind("", "", ID, temp);
-	Client theClient;
+	Client* theClient;
 	bool success = firm.retrieve(toFind, theClient);
-	theClient.showHistory();
+	if (success) theClient->showHistory();
 	return success;
 }
 
@@ -108,11 +116,11 @@ bool Manager::undoLastTransaction() {
 	int account2;
 	switch (currentUndo.getOp()) {
 	case 'D':
-		 sellShares(clientID, account, currentUndo.getAmount());
-		 break;
+		sellShares(clientID, account, currentUndo.getAmount());
+		break;
 	case 'W':
-		 buyShares(clientID, account, currentUndo.getAmount());
-		 break;
+		buyShares(clientID, account, currentUndo.getAmount());
+		break;
 	case 'M':
 		clientID2 = currentUndo.getMoveToID().substr(0, 4);
 		account2 = (currentUndo.getID().at(currentUndo.getID().length() - 1)) - '0';

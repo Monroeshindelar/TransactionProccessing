@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "client.h"
+#include "transaction.h"
 
 Client::Client() {}
 
@@ -30,20 +31,24 @@ string Client::getID() {
 void Client::showHistory() {
 	stack<Transaction> temp;
 	stack <Transaction> temp2;
+	cout << "Transaction history for " + getID() << endl;
+	cout << "-------------------------------" << endl;
 	while (!history.empty()) {
 		Transaction current = history.top();
-
+		cout << history.top();
 		temp.push(history.top());
 		history.pop();
 	}
+	cout << endl << endl << endl;;
 	while (!temp.empty()) {
 		temp2.push(temp.top());
 		temp.pop();
 	}
-	while (temp2.empty()) {
+	while (!temp2.empty()) {
 		history.push(temp2.top());
 		temp2.pop();
 	}
+	
 }
 
 bool Client::addToAccount(int acc, int amount) {
@@ -52,6 +57,16 @@ bool Client::addToAccount(int acc, int amount) {
 
 bool Client::subtractFromAccount(int acc, int amount) {
 	return lose.subtractFromAccount(acc, amount);
+}
+
+
+bool Client::addToHistory(string id, int acc, string id2, int amount, char op) {
+	ostringstream oss;
+	oss << id << acc;
+	string realID = oss.str();
+	Transaction tran(op, realID, id2, amount);
+	history.push(tran);
+	return true;
 }
 
 bool Client::operator<(Client& toCompare) {

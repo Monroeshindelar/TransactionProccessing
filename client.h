@@ -23,11 +23,13 @@ and the operator = is overriden so that you can make better copies
 of clients.
 */
 
-#include <string>
 #include "account.h"
-#include <stack>
 #include "transaction.h"
 #include <iostream>
+#include <stack>
+#include <string>
+#include <sstream>
+
 
 using namespace std;
 
@@ -49,7 +51,8 @@ public:
 	string getID(); //returns the ID of the client 
 	void showHistory(); //displays the transaction history of the client
 	bool addToAccount(int acc, int amount); //takes in an int to represent the account number and another int to represent the amount, and adds the amount to the specified account 
-	bool subtractFromAccount(int acc, int amount); //takes in an int to represnt the account number and then an int to represent an amount and then s ubtrats that amount from the specified account
+	bool subtractFromAccount(int acc, int amount); //takes in an int to represnt the account number and then an int to represent an amount and then subtracts that amount from the specified account
+	bool addToHistory(string, int, string, int, char);
 	bool operator<(Client&); //overridden < operator to compare if one client is bigger or smaller than another
 	bool operator>(Client&); //overridden > operator to compare if one client is bigger or smaller than another
 	bool operator==(Client&); //overridden == operator to compare clients and see if they are equal
