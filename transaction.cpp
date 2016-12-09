@@ -19,7 +19,7 @@ are not mandatory for every type of transaction, so they are defaulted. there ar
 for every element inside the transaction object so that they may easily be accessed by other
 classes.
 */
-#include "stdafx.h"
+
 #include "transaction.h"
 #include <string>
 

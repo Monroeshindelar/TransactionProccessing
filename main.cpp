@@ -24,26 +24,26 @@ the results of the manager class to the console, which will print the status of 
 in the tree.
 */
 
-#include <manager.h>
+#include "manager.h"
 using namespace std;
 
 int main() {
-    Manager theBank = new Manager(); //make a new manager object.
-    ifstream firmFile("hw5data.txt"); //make an ifstream object with the file hw5data.txt
+	Manager theBank;; //make a new manager object.
+    ifstream firmFile("HW5data.txt"); //make an ifstream object with the file hw5data.txt
     if(!firmFile) { //check to see if we found the file
         cout << "File could not be opened" << endl; //if we didnt, tell the user we couldnt find the file
         return 1;  //break out of the main
     }
     theBank.generateFirm(firmFile); //generate the firm using the ifstream we created
     firmFile.close(); //close the firm file ifstream
-    ifstream commands("hw5commands.txt"); //make an ifstream using the file hw5commands.txt
+    ifstream commands("HW5command.txt"); //make an ifstream using the file hw5commands.txt
     if(!commands) { //check to see if we found the file
         cout << "File could not be opened" << endl; //if we couldnt find the file tell the user
         return 1; //break out of the main
     }
     theBank.takeTransactions(commands); //call take transactions and give it the commands ifstream
     commands.close(); //close the commands ifstream
-    theBank.performTransaction(); //call perform transactions
+    theBank.performTransactions(); //call perform transactions
     cout << theBank << endl; //print out the data of the manager class
     return 0;
 };
