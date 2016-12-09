@@ -44,7 +44,7 @@ int main() {
     theBank.takeTransactions(commands); //call take transactions and give it the commands ifstream
     commands.close(); //close the commands ifstream
     theBank.performTransactions(); //call perform transactions
-    cout << theBank << endl; //print out the data of the manager class
+    //print out the data of the manager class
     return 0;
 };
  
