@@ -40,6 +40,7 @@ private:
 	};
 	Node* root; //a pointer to the root node. Where the tree begins
 	Node* insert(TBA, Node*); //the real insert function, which takes in the TBA object we are trying to insert and then a pointer to the beginning of the tree
+	bool retrieve(TBA, TBA&, Node*);
 	void clear(Node*);
 	string display(Node*);
 public:
@@ -47,7 +48,7 @@ public:
 	~BinarySearchTree();
 	bool isEmpty() const; //returns true if the list is empty, false otherwise
 	bool insert(TBA); //inserts a TBA object into the tree (facade)
-	bool retrieve(TBA, TBA&); //retrieves a TBA item from the list and stores it in the TBA ref we passed in 
+	bool retrieve(TBA, TBA&); //retrieves a TBA item from the list and stores it in the TBA ref we passed in
 	void clear(); //kills the tree
 	void display(); //displays the contents of the tree
 };
@@ -84,18 +85,21 @@ bool BinarySearchTree<TBA>::isEmpty() const {
 
 template<class TBA>
 bool BinarySearchTree<TBA>::retrieve(TBA toFind, TBA& toStore) {
-	Node* subtree = root;
-	bool success = false;
-	while (subtree != NULL) {
-		if (subtree->data < toFind) subtree = subtree->right;
-		else if (subtree->data > toFind) subtree = subtree->left;
-		else {
-			*&toStore = subtree->data;
-			success = true;
-		}
-	}
-	return success;
+	return retrieve(toFind, toStore, root);
 }
+
+template<class TBA>
+bool BinarySearchTree<TBA>::retrieve(TBA toFind, TBA& toStore, Node* subtree) {
+	if (subtree == NULL) return false;
+	if (subtree->data == toFind) {
+		*&toStore = subtree->data;
+		return true;
+	}
+	else if (subtree->data > toFind) retrieve(toFind, toStore, subtree->left);
+	else retrieve(toFind, toStore, subtree->right);
+}
+
+
 
 template<class TBA>
 void BinarySearchTree<TBA>::clear() {
