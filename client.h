@@ -23,13 +23,14 @@ and the operator = is overriden so that you can make better copies
 of clients.
 */
 
+#ifndef CLIENT_H
+#define CLIENT_H
 #include "account.h"
 #include "transaction.h"
 #include <iostream>
 #include <stack>
 #include <string>
 #include <sstream>
-
 
 using namespace std;
 
@@ -58,3 +59,4 @@ public:
 	bool operator==(Client&); //overridden == operator to compare clients and see if they are equal
 	Client& operator=(Client&); //overridden = operator to better make copies of clients 
 };
+#endif

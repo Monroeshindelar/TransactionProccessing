@@ -84,3 +84,7 @@ Postcondition: A copy of the amount variable's value is returned
 int Transaction::getAmount() const {
 	return amount;				//Returning the amount's value
 }
+
+ostream& operator<<(ostream& out, const Transaction&) {
+	return out;
+}

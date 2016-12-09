@@ -61,11 +61,6 @@ void Manager::performTransactions() {
 		char check = current.getOp();
 		if (check == 'H') undo.push(current);
 		transactionQueue.pop();
-<<<<<<< HEAD
-
-=======
-		
->>>>>>> a2b52e3f829db2a958bfeee7a33dc1772b6eff9a
 	}
 	firm.display();
 }
@@ -75,14 +70,10 @@ bool Manager::buyShares(string ID, int acc, int amount) {
 	Client toFind("", "", ID, temp);
 	Client* theClient;
 	bool success = firm.retrieve(toFind, theClient);
-<<<<<<< HEAD
 	if (success) {
-		theClient->addToAccount(acc, amount);
+		success = theClient->addToAccount(acc, amount);
 		theClient->addToHistory(ID, acc, "", amount, 'D');
 	}
-=======
-	if(success) theClient->addToAccount(acc, amount);
->>>>>>> a2b52e3f829db2a958bfeee7a33dc1772b6eff9a
 	return success;
 }
 
@@ -91,14 +82,10 @@ bool Manager::sellShares(string ID, int acc, int amount) {
 	Client toFind("", "", ID, temp);
 	Client* theClient;
 	bool success = firm.retrieve(toFind, theClient);
-<<<<<<< HEAD
 	if (success) {
-		theClient->subtractFromAccount(acc, amount);
+		success = theClient->subtractFromAccount(acc, amount);
 		theClient->addToHistory(ID, acc, "", amount, 'W');
 	}
-=======
-	if(success) theClient->subtractFromAccount(acc, amount);
->>>>>>> a2b52e3f829db2a958bfeee7a33dc1772b6eff9a
 	return success;
 }
 
