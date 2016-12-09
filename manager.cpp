@@ -6,6 +6,10 @@ Manager::Manager() {
 
 }
 
+Manager::~Manager() {
+
+}
+
 bool Manager::generateFirm(ifstream& file) {
 	string l;
 	string f;
@@ -40,13 +44,19 @@ void Manager::performTransactions() {
 		switch (current.getOp()) {
 			case 'D':
 				buyShares(clientID, account, current.getAmount());
+				break;
 			case 'W':
 				sellShares(clientID, account, current.getAmount());
+				break;
 			case 'M':
 				moveShares(clientID, account, current.getMoveToID(), current.getAmount());
+				break;
 			case 'H':
 				viewHistory(clientID);
-			default: cout << "Incorrect operation" << endl;
+				break;
+			default: 
+				cout << "Incorrect operation" << endl;
+				break;
 		}
 		char check = current.getOp();
 		if (check == 'H') undo.push(current);
@@ -133,4 +143,8 @@ bool Manager::redoLastTransaction() {
 	undo.push(undo.top());
 	redo.pop();
 	return true;
+}
+
+ostream& operator<<(ostream& out, const Manager& target) {
+	return out;
 }
