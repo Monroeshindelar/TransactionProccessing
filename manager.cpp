@@ -29,7 +29,7 @@ bool Manager::takeTransactions(ifstream& file) {
 	int amount;
 	while (file >> operation >> i) {
 		if (operation == 'D' || operation == 'W') file >> amount;
-		else if (operation == 'M') file >> i2;
+		else if (operation == 'M') file >> amount >> i2;
 		Transaction newTrans(operation, i, i2, amount);
 		transactionQueue.push(newTrans);
 	}
