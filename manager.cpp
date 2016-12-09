@@ -1,6 +1,7 @@
+#include "stdafx.h"
 #include "manager.h"
 
-//Hello world
+
 Manager::Manager() {
 
 }
@@ -28,11 +29,12 @@ bool Manager::takeTransactions(ifstream& file) {
 		Transaction newTrans(operation, i, i2, amount);
 		transactionQueue.push(newTrans);
 	}
+	return true;
 }
 
 void Manager::performTransactions() {
 	while (!transactionQueue.empty()) {
-		Transaction current = transactionQueue.front();
+		Transaction& current = transactionQueue.front();
 		string clientID = current.getID().substr(0, 4);
 		int account = (current.getID().at(current.getID().length() - 1)) - '0';
 		switch (current.getOp()) {
@@ -42,11 +44,12 @@ void Manager::performTransactions() {
 				sellShares(clientID, account, current.getAmount());
 			case 'M':
 				moveShares(clientID, account, current.getMoveToID(), current.getAmount());
-			case 'H': 
+			case 'H':
 				viewHistory(clientID);
-			default: cout << "Incorrect operation" << endl;	
+			default: cout << "Incorrect operation" << endl;
 		}
-		if(current.getOp != 'H') undo.push(current);
+		char check = current.getOp();
+		if (check == 'H') undo.push(current);
 		transactionQueue.pop();
 	}
 }
@@ -67,13 +70,14 @@ bool Manager::sellShares(string ID, int acc, int amount) {
 	bool success = firm.retrieve(toFind, theClient);
 	theClient.subtractFromAccount(acc, amount);
 	return success;
-} 
+}
 
 bool Manager::moveShares(string ID, int acc, string moveToID, int amount) {
 	string otherClientID = moveToID.substr(0, 4);
 	int otherAcc = (moveToID.at(moveToID.length() - 1)) - '0';
 	bool success = sellShares(ID, acc, amount);
 	if (success) buyShares(otherClientID, otherAcc, amount);
+	return success;
 }
 
 bool Manager::viewHistory(string ID) {
@@ -93,17 +97,21 @@ bool Manager::undoLastTransaction() {
 	string clientID2;
 	int account2;
 	switch (currentUndo.getOp()) {
-		case 'D':
-			sellShares(clientID, account, currentUndo.getAmount());
-		case 'W':
-			buyShares(clientID, account, currentUndo.getAmount());
-		case 'M':
-			clientID2 = currentUndo.getMoveToID().substr(0, 4);
-			account2 = (currentUndo.getID().at(currentUndo.getID().length() - 1)) - '0';
-			moveShares(clientID2, account2, currentUndo.getID, currentUndo.getAmount);
+	case 'D':
+		 sellShares(clientID, account, currentUndo.getAmount());
+		 break;
+	case 'W':
+		 buyShares(clientID, account, currentUndo.getAmount());
+		 break;
+	case 'M':
+		clientID2 = currentUndo.getMoveToID().substr(0, 4);
+		account2 = (currentUndo.getID().at(currentUndo.getID().length() - 1)) - '0';
+		moveShares(clientID2, account2, currentUndo.getID(), currentUndo.getAmount());
+		break;
 	}
 	redo.push(undo.top());
 	undo.pop();
+	return true;
 }
 
 bool Manager::redoLastTransaction() {
@@ -114,14 +122,15 @@ bool Manager::redoLastTransaction() {
 	switch (current.getOp()) {
 	case 'D':
 		buyShares(clientID, account, current.getAmount());
+		break;
 	case 'W':
 		sellShares(clientID, account, current.getAmount());
+		break;
 	case 'M':
 		moveShares(clientID, account, current.getMoveToID(), current.getAmount());
+		break;
 	}
 	undo.push(undo.top());
 	redo.pop();
+	return true;
 }
-
-
-

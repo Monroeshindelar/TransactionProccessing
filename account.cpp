@@ -1,4 +1,6 @@
+#include "stdafx.h"
 #include "account.h"
+
 
 ostream& operator<<(ostream& out, const Account& rhs) {
 	out << "---Initial balances---" << endl;
@@ -24,7 +26,10 @@ ostream& operator<<(ostream& out, const Account& rhs) {
 	out << "Growth Index Fund: " << rhs.loseAccount[7] << endl;
 	out << "Value Fund: " << rhs.loseAccount[8] << endl;
 	out << "Value Stock Index: " << rhs.loseAccount[9] << endl;
+	return out;
 }
+
+Account::Account() {}
 
 Account::Account(int* balances) {
 	for (int i = 0; i < 10; i++) {
