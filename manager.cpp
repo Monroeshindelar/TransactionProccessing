@@ -69,20 +69,18 @@ void Manager::performTransactions() {
 bool Manager::buyShares(string ID, int acc, int amount) {
 	int temp[10];
 	Client toFind("", "", ID, temp);
-	Client* theClient = new Client();
-	delete theClient;
+	Client* theClient;
 	bool success = firm.retrieve(toFind, theClient);
-	theClient->addToAccount(acc, amount);
+	if(success) theClient->addToAccount(acc, amount);
 	return success;
 }
 
 bool Manager::sellShares(string ID, int acc, int amount) {
 	int temp[10];
 	Client toFind("", "", ID, temp);
-	Client* theClient = new Client();
-	delete theClient;
+	Client* theClient;
 	bool success = firm.retrieve(toFind, theClient);
-	theClient->subtractFromAccount(acc, amount);
+	if(success) theClient->subtractFromAccount(acc, amount);
 	return success;
 }
 
@@ -97,10 +95,9 @@ bool Manager::moveShares(string ID, int acc, string moveToID, int amount) {
 bool Manager::viewHistory(string ID) {
 	int temp[10];
 	Client toFind("", "", ID, temp);
-	Client* theClient = new Client();
-	delete theClient;
+	Client* theClient;
 	bool success = firm.retrieve(toFind, theClient);
-	theClient->showHistory();
+	if (success) theClient->showHistory();
 	return success;
 }
 
