@@ -11,7 +11,7 @@ Client::Client(string l, string f, string i, int* la) {
 	lose = temp;
 }
 
-Client::~Client(){
+Client::~Client() {
 
 }
 
@@ -58,7 +58,7 @@ bool Client::operator<(Client& toCompare) {
 	if (getID() < toCompare.getID()) return true;
 	else return false;
 }
- 
+
 bool Client::operator>(Client& toCompare) {
 	return !operator<(toCompare);
 }
@@ -81,7 +81,3 @@ ostream& operator<<(ostream& out, const Client& target) {
 	out << endl;
 	return out;
 }
-
-
-
-

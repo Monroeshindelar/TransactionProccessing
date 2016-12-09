@@ -19,7 +19,7 @@ are not mandatory for every type of transaction, so they are defaulted. there ar
 for every element inside the transaction object so that they may easily be accessed by other
 classes.
 */
-
+#include "stdafx.h"
 #include "transaction.h"
 #include <string>
 
@@ -30,9 +30,9 @@ Precondition: The given ostream object and transaction object are the desired ob
 Postcondition: The ostream object contains a proper output from the rhs Transaction object and the ostream is returned
 */
 /*ostream& operator<<(ostream& out, const Transaction& rhs) {
-	//Placing all instance variables inside ostream object
-	out << rhs.getOp() << " " << rhs.getID() << " " << rhs.getID() << " " << rhs.getMoveToID() << " " << rhs.getAmount() << endl;
-	return out; //Returning the ostream object
+//Placing all instance variables inside ostream object
+out << rhs.getOp() << " " << rhs.getID() << " " << rhs.getID() << " " << rhs.getMoveToID() << " " << rhs.getAmount() << endl;
+return out; //Returning the ostream object
 }*/
 
 /* Transaction constructor: This constructor takes in a char for the command, a string for the ID, another string
