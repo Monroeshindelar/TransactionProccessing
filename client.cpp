@@ -4,7 +4,6 @@ Professor Rob Nash
 CSS 342: Data Structures, Algorithms, and Discrete Math
 December 9, 2016
 Transaction Processing: Client class
-
 This class is meant to represent a client of the lose firm.
 The client has a last name, a firts name, an ID, an Account,
 and an account history. THis class has functions that allow
@@ -22,7 +21,7 @@ display the contents of the clients history stack. The operators <,>, and
 and the operator = is overriden so that you can make better copies
 of clients.
 */
-
+#include "stdafx.h"
 #include "client.h"
 #include "transaction.h"
 
@@ -97,6 +96,7 @@ void Client::showHistory() {
 	while (!history.empty()) {								//Looping until history stack is empty
 		cout << history.top();								//Outputing the Transaction object at the top of the history stack
 		temp.push(history.top());							//Pushing the top Transaction object into the temp stack
+		if (history.top().getOp() == 'M') history.pop();	//pops the extra transaction off thats not necessary
 		history.pop();										//Removing the top Transaction object from the history stack
 	}
 	cout << endl << endl << endl;							//Adding spaces
@@ -129,7 +129,6 @@ bool Client::subtractFromAccount(int acc, int amount) {
    The method takes in the 4-digit ID, the account number, another string for a 5-digit LOSE accoutn in case the Transaction 
    involved moving money from one account to another, an integer amount, and the operation that was performed. All of these
    data are placed into a statically-allocated Transaction object and placed into the history stack. Then true is returned.
-
 */
 bool Client::addToHistory(string id, int acc, string id2, int amount, char op) {
 	string realID = id + to_string(acc);					//Forming the 5-digit LOSE account ID
