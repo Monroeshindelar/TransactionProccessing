@@ -4,7 +4,6 @@ Professor Rob Nash
 CSS 342: Data Structures, Algorithms, and Discrete Math
 November 23, 2016
 Transaction Processing: Manager Class
-
 This class is used to manage the rest of the classes in the
 transaction processing homework and to do all of the high
 level operations. It contains a binary search tree that
@@ -67,7 +66,7 @@ bool Manager::generateFirm(ifstream& file) {
 	string f; //make a string to store the first name
 	string i; //make a string to store the ID
 	int account[10]; //make an array to store the intitial balances of the account
-	//loop while we can put all these items into the initialized variables
+					 //loop while we can put all these items into the initialized variables
 	while (file >> l >> f >> i >> account[0] >> account[1] >> account[2] >> account[3] >> account[4] >> account[5] >> account[6] >> account[7] >> account[8] >> account[9]) {
 		Client newClient(l, f, i, account); //make a new client with the information taken from the line
 		firm.insert(newClient); //insert the client into the firm
@@ -80,14 +79,14 @@ bool Manager::generateFirm(ifstream& file) {
 /*
 Take Transactions: The goal of this method is to take a file and read transaction commands
 from it. It stores the transaction commands in the queue to be performed later using a different
-function call. It takes in a file and reads each line. First we initialize temporary variables to 
+function call. It takes in a file and reads each line. First we initialize temporary variables to
 store the data from the file so we can craft a transaction object to store in the queue. We make
 a char to store the operator, a string that represents the ID of the client. Another string that
 we set to an empty string that we use just in case the transaction is a move command, and an int
 that represents the amount of money we will be working with. These are initialized in the order
 we expect to see them in the (Assuming correct input from the file). Since the smallest number of
 elements that we can see is 2 (View History with command and ID), we take in the command and the ID
-of the user. Then we check the operator to see if we need to read more data. If it is a D or a W 
+of the user. Then we check the operator to see if we need to read more data. If it is a D or a W
 then we read the amount from the file. If it is an M then we read the amount and then the second
 ID from the file. Then we create a transaction object and give it all of the information necessary
 and push it to the transaction queue. Then we return true.
@@ -122,7 +121,7 @@ and subtracting the value of the char 0 to get its actual value. Then we check t
 to see what operations we need to perform. If it is a D we will call buyshares, if its a w we will call the sell
 shares fucntion. If its a m then we will call the move shares function, and if its an h we will call the view
 history function. Then if the operator is D or W we will push it to the undo stack (Move functions are processed
-as a buy function and a sell function, so a move function will be represented as a buy and a sell in the undo 
+as a buy function and a sell function, so a move function will be represented as a buy and a sell in the undo
 stack). At the end we pop off the transaction queue.
 */
 void Manager::performTransactions() {
@@ -138,7 +137,7 @@ void Manager::performTransactions() {
 			sellShares(clientID, account, current.getAmount()); //call sell shares with the proper information
 			break; //break
 		case 'M': //if the operator is M
-			moveShares(clientID, account , current.getMoveToID(), current.getAmount()); //call move shares with the proper information
+			moveShares(clientID, account, current.getMoveToID(), current.getAmount()); //call move shares with the proper information
 			break; //break from the switch 
 		case 'H': //if the operator is H
 			viewHistory(clientID); //view the history with the client of the same ID
@@ -147,7 +146,7 @@ void Manager::performTransactions() {
 			cout << "Incorrect operation" << endl; //incorrect operator
 			break; //break from the switch
 		}
-		if (current.getOp() == 'D' || current.getOp() == 'W') undo.push(current);
+		if (current.getOp() == 'D' || current.getOp() == 'W' || current.getOp() == 'M') undo.push(current);
 		transactionQueue.pop(); //pop off from the queue
 	}
 }
@@ -156,18 +155,18 @@ void Manager::performTransactions() {
 //Postcondition: Funds added to correct clients account
 /*
 Buy Shares: The goal of this method is to deposit money into a clients account.
-It takes in an ID to represent the client we are modifying, an account that 
+It takes in an ID to represent the client we are modifying, an account that
 represents the specific lose accout that we will be adding funds to, and then
-the amount of money that we will be adding to the account. First we initialize 
-a temp array, this is just so that we can craft a client to compare to other 
+the amount of money that we will be adding to the account. First we initialize
+a temp array, this is just so that we can craft a client to compare to other
 clients in the list. Then we craft basically an empty client so that we can use
 it to search for the client which has that ID (Clients are compared by ID). Then
 we make a ponter to a client, which is not initialized to have any values. This
 will be used to store the information from the actual client that we find in the
 bank. Then we call the retrieve function of the banks tree and pass it the empty
 client, that just contains the ID of the client we are looking for. If we have
-found the client we are looking for in the tree, then we will call the clients 
-add to account function and passing it the account and the amount of money we 
+found the client we are looking for in the tree, then we will call the clients
+add to account function and passing it the account and the amount of money we
 are working with, and then we add this transaction to the history of the client.
 We return a boolean that represents the success of buying shares.
 */
@@ -179,7 +178,7 @@ bool Manager::buyShares(string ID, int acc, int amount) {
 	bool success = firm.retrieve(toFind, theClient); //Search the bank tree for the client we want
 	if (success) { //if we find it
 		success = theClient->addToAccount(acc, amount); //add the money to the account
-		if(success) theClient->addToHistory(ID, acc, "", amount, 'D'); //add the transaction to the clients history
+		if (success) theClient->addToHistory(ID, acc, "", amount, 'D'); //add the transaction to the clients history
 	}
 	return success; //return the status of the function
 }
@@ -189,12 +188,12 @@ bool Manager::buyShares(string ID, int acc, int amount) {
 /*
 Sell Shares: The goal of this method is to withdraw money from a clients account.
 It takes in an ID to represent the client we are modifying,, an account that
-represents the specific lose account that we will be adding funds to, and then the 
+represents the specific lose account that we will be adding funds to, and then the
 amount of money that we will be adding to the account. First we initialize a temp
 array, this is just so that we can craft a client to compare to other clients in the
 list. Then we craft basically an empty client so that we can use it to search for the
 client which has the ID of the client we are looking for. If we have foudn the client we
-are looking form in the tree, then we will call the clients subtract from account 
+are looking form in the tree, then we will call the clients subtract from account
 method and then add this transaction to the history of the client. We return a boolean that
 represents the success of selling shares.
 */
@@ -206,7 +205,7 @@ bool Manager::sellShares(string ID, int acc, int amount) {
 	bool success = firm.retrieve(toFind, theClient); //search the tree for the client, store it in the pointer
 	if (success) { //if we found it
 		success = theClient->subtractFromAccount(acc, amount); //subtract from the account
-		if(success) theClient->addToHistory(ID, acc, "", amount, 'W'); //add it to the client history
+		if (success) theClient->addToHistory(ID, acc, "", amount, 'W'); //add it to the client history
 	}
 	return success; //return the status of the function.
 }
@@ -217,23 +216,26 @@ bool Manager::sellShares(string ID, int acc, int amount) {
 Move Shares: The goal of this function is to move shares between either two clients
 or two accounts of the same client. It takes in a string that represents the ID
 of the first client, an account number that represents the account we will be moving
-shares from. It takes in a 5 digit string that represents both the client we will 
-be moving the funds to (first 4 digits) and then the account we will be moving to, 
-(the last digit), and finally the amount we will be moving. We need to parse the 
+shares from. It takes in a 5 digit string that represents both the client we will
+be moving the funds to (first 4 digits) and then the account we will be moving to,
+(the last digit), and finally the amount we will be moving. We need to parse the
 second string we have taken in as parameters so that we can get the correct client ID
 and account number. After that we will call sell shares method passing it in the first
 ID and account number, to remove the funds from that account, and then we will call buy
-shares on the new account ID and account number, and push the transaction to the undo 
+shares on the new account ID and account number, and push the transaction to the undo
 stack. Then we will return the mission status
 */
 bool Manager::moveShares(string ID, int acc, string moveToID, int amount) {
 	string otherClientID = moveToID.substr(0, 4); //get the move to Client ID
 	int otherAcc = (moveToID.at(moveToID.length() - 1)) - '0'; //get the move to Client account
-	bool success = sellShares(ID, acc, amount); //remove the shares from the first account
+	int temp[10]; //satisfy the client constructor
+	Client toFind("", "", ID, temp); //create the client to help us search
+	Client* theClient; //create the client object that will store the client in the tree
+	bool success = firm.retrieve(toFind, theClient);
+	if (success) success = sellShares(ID, acc, amount); //remove the shares from the first account
 	if (success) { //if we could remove the shares from the first account
-		undo.push(Transaction('W', ID + to_string(acc), "", amount));
 		buyShares(otherClientID, otherAcc, amount); //add thes shares to the other account
-		undo.push(Transaction('D', moveToID, "", amount));
+		theClient->addToHistory(ID, acc, moveToID, amount, 'M');
 	}
 	return success; //return the status of our mission
 }
@@ -241,7 +243,7 @@ bool Manager::moveShares(string ID, int acc, string moveToID, int amount) {
 //Precondition: Need to view the history of a client
 //Postcondition: Client history viewed
 /*
-View History: The goal of this function is to view the history of a client. First we make 
+View History: The goal of this function is to view the history of a client. First we make
 a temp array so that we can satisfy the condition of the Client constructor. Then we make
 and empty client with the ID of the client we are trying to view. After that we make a pointer
 to a client that will store the actual client from the tree that we will modify. We will search
@@ -267,7 +269,7 @@ First we check to see if the stack that stores the undos is empty, if it is we w
 Otherwise we will pull a transaction off the top of the undo stack, we will get the client ID
 out of the transaction that we pulled out, parse it so we get the 4 digit client ID number as well
 a the account that we had modified. Then we perform switch on the operator that was performed and
-do the exact opposite of the thing that was previously done. Then we push the undone transaction to 
+do the exact opposite of the thing that was previously done. Then we push the undone transaction to
 the redo stack and pop it off the undo stack.
 */
 bool Manager::undoLastTransaction() {
@@ -275,13 +277,20 @@ bool Manager::undoLastTransaction() {
 	Transaction currentUndo = undo.top(); //pull the transaction off the to top the stack
 	string clientID = currentUndo.getID().substr(0, 4); //get the 4 digit client ID
 	int account = (currentUndo.getID().at(currentUndo.getID().length() - 1)) - '0'; //get the account we need to modify
+	string clientID2 = "";
+	int account2 = 0;
 	switch (currentUndo.getOp()) { //switch depending on the operator
-		case 'D':
-			sellShares(clientID, account, currentUndo.getAmount());
-			break;
-		case 'W':
-			buyShares(clientID, account, currentUndo.getAmount());
-			break;
+	case 'D': //if we bought shares
+		sellShares(clientID, account, currentUndo.getAmount()); //call the sell shares function
+		break; //break out
+	case 'W': //if we sold shares
+		buyShares(clientID, account, currentUndo.getAmount()); //call the buy shares function
+		break; //break
+	case 'M': //if we moved share 
+		clientID2 = currentUndo.getMoveToID().substr(0, 4); //get the 4 digit ID of the client we moved to
+		account2 = (currentUndo.getMoveToID().at(currentUndo.getID().length() - 1)) - '0'; //get the 1 digit account we added shares to
+		moveShares(clientID2, account2, currentUndo.getID(), currentUndo.getAmount()); //call move shares
+		break; //break out of the switch
 	}
 	redo.push(undo.top()); //add the transaction the redo stack
 	undo.pop(); //pop the transaction off the undo stack
@@ -293,7 +302,7 @@ bool Manager::undoLastTransaction() {
 /*
 Redo Last Transaction: The goal of this function is to redo a transaction that was undone by
 the undo stack. First we check to see if the redo stack is empty, and if it is we will return
-false. Otherwise we will pull a transaction out of the stack. Then we will pull the client ID 
+false. Otherwise we will pull a transaction out of the stack. Then we will pull the client ID
 out of the transaction, and parse it to get the 4 digit client ID and the 1 digit that represents
 the account we will be modifying. Then we switch on the operation, and perform the same transaction
 that we pulled out of the stack. Then we will push the current transaction to the top of the undo
@@ -305,23 +314,25 @@ bool Manager::redoLastTransaction() {
 	string clientID = current.getID().substr(0, 4); //get the 4 digit client ID
 	int account = (current.getID().at(current.getID().length() - 1)) - '0'; //get the account we need to modify
 	switch (current.getOp()) { //switch on the transaction operator
-		case 'D':
-			buyShares(clientID, account, current.getAmount());
-			break;
-		case 'W':
-			sellShares(clientID, account, current.getAmount());
-			break;
-		
+	case 'D': //if we bought shares
+		buyShares(clientID, account, current.getAmount()); //buy shares again
+		break; //break out of the switch
+	case 'W': //if we sold shares
+		sellShares(clientID, account, current.getAmount()); //sell shares again
+		break; //break outof the swith
+	case 'M': //if we moved shares
+		moveShares(clientID, account, current.getMoveToID(), current.getAmount()); //move shares again
+		break; //break
 	}
 	undo.push(undo.top()); //push the current transaction to the undo stack
 	redo.pop(); //pop the transaction off the top of the redo stack
- //return the	return true;
+	return true; //return true
 }
 //-----------------------------------Operator<<-----------------------------------
 //Precondition: Need to print the status of the Manager
 //Postcondition: Manager status printed
 /*
-Operator<<: The goal of this method is to print out the status of the bank. It calls 
+Operator<<: The goal of this method is to print out the status of the bank. It calls
 the operator<< of the tree.
 */
 ostream& operator<<(ostream& out, const Manager& target) {
