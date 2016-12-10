@@ -58,11 +58,9 @@ void Manager::performTransactions() {
 			cout << "Incorrect operation" << endl;
 			break;
 		}
-		char check = current.getOp();
-		if (check == 'H') undo.push(current);
+		if (current.getOp() == 'D' || current.getOp() == 'W') undo.push(current);
 		transactionQueue.pop();
 	}
-	cout << firm << endl;
 }
 
 bool Manager::buyShares(string ID, int acc, int amount) {
@@ -93,7 +91,11 @@ bool Manager::moveShares(string ID, int acc, string moveToID, int amount) {
 	string otherClientID = moveToID.substr(0, 4);
 	int otherAcc = (moveToID.at(moveToID.length() - 1)) - '0';
 	bool success = sellShares(ID, acc, amount);
-	if (success) buyShares(otherClientID, otherAcc, amount);
+	if (success) {
+		undo.push(Transaction('W', ID + to_string(acc), "", amount));
+		buyShares(otherClientID, otherAcc, amount);
+		undo.push(Transaction('D', moveToID, "", amount));
+	}
 	return success;
 }
 
@@ -111,19 +113,12 @@ bool Manager::undoLastTransaction() {
 	Transaction currentUndo = undo.top();
 	string clientID = currentUndo.getID().substr(0, 4);
 	int account = (currentUndo.getID().at(currentUndo.getID().length() - 1)) - '0';
-	string clientID2;
-	int account2;
 	switch (currentUndo.getOp()) {
 	case 'D':
 		sellShares(clientID, account, currentUndo.getAmount());
 		break;
 	case 'W':
 		buyShares(clientID, account, currentUndo.getAmount());
-		break;
-	case 'M':
-		clientID2 = currentUndo.getMoveToID().substr(0, 4);
-		account2 = (currentUndo.getID().at(currentUndo.getID().length() - 1)) - '0';
-		moveShares(clientID2, account2, currentUndo.getID(), currentUndo.getAmount());
 		break;
 	}
 	redo.push(undo.top());
@@ -133,7 +128,7 @@ bool Manager::undoLastTransaction() {
 
 bool Manager::redoLastTransaction() {
 	if (redo.empty()) return false;
-	Transaction current = undo.top();
+	Transaction current = redo.top();
 	string clientID = current.getID().substr(0, 4);
 	int account = (current.getID().at(current.getID().length() - 1)) - '0';
 	switch (current.getOp()) {
@@ -143,13 +138,11 @@ bool Manager::redoLastTransaction() {
 	case 'W':
 		sellShares(clientID, account, current.getAmount());
 		break;
-	case 'M':
-		moveShares(clientID, account, current.getMoveToID(), current.getAmount());
-		break;
+		
 	}
 	undo.push(undo.top());
-	redo.pop();
-	return true;
+		redo.pop();
+		return true;
 }
 
 ostream& operator<<(ostream& out, const Manager& target) {

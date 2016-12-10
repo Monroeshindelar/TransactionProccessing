@@ -25,10 +25,11 @@ in the tree.
 */
 
 #include "manager.h"
+//#include <vld.h>
 using namespace std;
 
 int main() {
-	Manager theBank;; //make a new manager object.
+	Manager theBank; //make a new manager object.
     ifstream firmFile("HW5data.txt"); //make an ifstream object with the file hw5data.txt
     if(!firmFile) { //check to see if we found the file
         cout << "File could not be opened" << endl; //if we didnt, tell the user we couldnt find the file
@@ -44,7 +45,18 @@ int main() {
     theBank.takeTransactions(commands); //call take transactions and give it the commands ifstream
     commands.close(); //close the commands ifstream
     theBank.performTransactions(); //call perform transactions
-    //print out the data of the manager class
+	
+	//theBank.undoLastTransaction();
+	//theBank.undoLastTransaction();
+	//theBank.undoLastTransaction();
+	//theBank.undoLastTransaction();
+
+	//theBank.redoLastTransaction();
+	//theBank.redoLastTransaction();
+	//theBank.redoLastTransaction();
+	//theBank.redoLastTransaction();
+
+	cout << theBank << endl; //print out the data of the manager class
     return 0;
 };
  
