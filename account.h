@@ -34,5 +34,6 @@ public:
 	~Account(); //Destructor for accounts
 	bool addToAccount(int acc, int amount); //Takes in an account (index of the array) and an amount and adds that amount to that account
 	bool subtractFromAccount(int acc, int amount); //Takes in an account (index of the array) and an amount and subracts that amount from that account
+	Account& operator=(const Account&);
 };
 #endif

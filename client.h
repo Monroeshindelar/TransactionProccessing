@@ -2,7 +2,7 @@
 Monroe Shindelar, JJ Abides
 Professor Rob Nash
 CSS 342: Data Structures, Algorithms, and Discrete Math
-November 23, 2016
+December 9, 2016
 Transaction Processing: Client class
 
 This class is meant to represent a client of the lose firm.
