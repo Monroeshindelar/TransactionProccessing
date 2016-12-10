@@ -24,7 +24,7 @@ performed is then pushed to the stack. undoLastTransaction pops the last element
 off the stack and then undoes it. redoLastTransaction is similar to undo, but instead
 of reversing the transaction, it does the same transaction again.
 */
-#include "stdafx.h"
+
 #include "manager.h"
 
 //-----------------------------------Manager Constructor-----------------------------------
@@ -147,7 +147,7 @@ void Manager::performTransactions() {
 			cout << "Incorrect operation" << endl; //incorrect operator
 			break; //break from the switch
 		}
-		if (current.getOp() == 'D' || current.getOp() == 'W') undo.push(current);
+		if (current.getOp() == 'D' || current.getOp() == 'W' || current.getOp() == 'M') undo.push(current);
 		transactionQueue.pop(); //pop off from the queue
 	}
 }
@@ -229,11 +229,15 @@ stack. Then we will return the mission status
 bool Manager::moveShares(string ID, int acc, string moveToID, int amount) {
 	string otherClientID = moveToID.substr(0, 4); //get the move to Client ID
 	int otherAcc = (moveToID.at(moveToID.length() - 1)) - '0'; //get the move to Client account
-	bool success = sellShares(ID, acc, amount); //remove the shares from the first account
+	int temp[10];
+	Client toFind("", "", ID, temp);
+	Client* theClient;
+	bool success = firm.retrieve(toFind, theClient);
+	if (success) success = sellShares(ID, acc, amount); //remove the shares from the first account
 	if (success) { //if we could remove the shares from the first account
-		undo.push(Transaction('W', ID + to_string(acc), "", amount));
+		
 		buyShares(otherClientID, otherAcc, amount); //add thes shares to the other account
-		undo.push(Transaction('D', moveToID, "", amount));
+		theClient->addToHistory(ID, acc, moveToID, amount, 'M');
 	}
 	return success; //return the status of our mission
 }
@@ -275,12 +279,19 @@ bool Manager::undoLastTransaction() {
 	Transaction currentUndo = undo.top(); //pull the transaction off the to top the stack
 	string clientID = currentUndo.getID().substr(0, 4); //get the 4 digit client ID
 	int account = (currentUndo.getID().at(currentUndo.getID().length() - 1)) - '0'; //get the account we need to modify
+	string clientID2 = "";
+	int account2 = 0;
 	switch (currentUndo.getOp()) { //switch depending on the operator
 		case 'D':
 			sellShares(clientID, account, currentUndo.getAmount());
 			break;
 		case 'W':
 			buyShares(clientID, account, currentUndo.getAmount());
+			break;
+		case 'M':
+			clientID2 = currentUndo.getMoveToID().substr(0, 4);
+			account2 = (currentUndo.getMoveToID().at(currentUndo.getID().length() - 1)) - '0';
+			moveShares(clientID2, account2, currentUndo.getID(), currentUndo.getAmount());
 			break;
 	}
 	redo.push(undo.top()); //add the transaction the redo stack
@@ -311,11 +322,13 @@ bool Manager::redoLastTransaction() {
 		case 'W':
 			sellShares(clientID, account, current.getAmount());
 			break;
-		
+		case 'M':
+			moveShares(clientID, account, current.getMoveToID(), current.getAmount());
+			break;
 	}
 	undo.push(undo.top()); //push the current transaction to the undo stack
 	redo.pop(); //pop the transaction off the top of the redo stack
- //return the	return true;
+	return true; //return true
 }
 //-----------------------------------Operator<<-----------------------------------
 //Precondition: Need to print the status of the Manager

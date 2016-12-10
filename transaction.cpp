@@ -86,6 +86,6 @@ int Transaction::getAmount() const {
 }
 
 ostream& operator<<(ostream& out, const Transaction& rhs) {
-	out << rhs.op << " " << rhs.ID << " " << rhs.moveToID << " " << rhs.amount << endl;
+	out << rhs.op << " " << rhs.ID << " " << rhs.amount << " " << rhs.getMoveToID() << endl;
 	return out;
 }
