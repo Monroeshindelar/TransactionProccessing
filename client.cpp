@@ -96,7 +96,6 @@ void Client::showHistory() {
 	while (!history.empty()) {								//Looping until history stack is empty
 		cout << history.top();								//Outputing the Transaction object at the top of the history stack
 		temp.push(history.top());							//Pushing the top Transaction object into the temp stack
-		if (history.top().getOp() == 'M') history.pop();	//pops the extra transaction off thats not necessary
 		history.pop();										//Removing the top Transaction object from the history stack
 	}
 	cout << endl << endl << endl;							//Adding spaces

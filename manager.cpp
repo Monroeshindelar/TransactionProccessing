@@ -220,22 +220,29 @@ shares from. It takes in a 5 digit string that represents both the client we wil
 be moving the funds to (first 4 digits) and then the account we will be moving to,
 (the last digit), and finally the amount we will be moving. We need to parse the
 second string we have taken in as parameters so that we can get the correct client ID
-and account number. After that we will call sell shares method passing it in the first
-ID and account number, to remove the funds from that account, and then we will call buy
-shares on the new account ID and account number, and push the transaction to the undo
-stack. Then we will return the mission status
+and account number. Then we make two clients, one that has the ID of the client
+we passed in as parameters, and the other has the ID we parsed from moveToID. We also
+create two client pointers to store the data of each client so we have a place to store
+the clients that we find in the tree. We call retrieve and hand it the first client, and
+then we call retrieve and hand it the second client. If we cant find either of these clients
+then we cant move shares anywhere so we eont do any more. If we found them both, then we
+call the first clients subtract method. If that returns successful, then we call the second
+clients add method and then add this transactions to the first clients history
 */
 bool Manager::moveShares(string ID, int acc, string moveToID, int amount) {
 	string otherClientID = moveToID.substr(0, 4); //get the move to Client ID
 	int otherAcc = (moveToID.at(moveToID.length() - 1)) - '0'; //get the move to Client account
 	int temp[10]; //satisfy the client constructor
 	Client toFind("", "", ID, temp); //create the client to help us search
+	Client toFind2("", "", otherClientID, temp); //make a second empty client that we will use to search for the other account
 	Client* theClient; //create the client object that will store the client in the tree
-	bool success = firm.retrieve(toFind, theClient);
-	if (success) success = sellShares(ID, acc, amount); //remove the shares from the first account
-	if (success) { //if we could remove the shares from the first account
-		buyShares(otherClientID, otherAcc, amount); //add thes shares to the other account
-		theClient->addToHistory(ID, acc, moveToID, amount, 'M');
+	Client* theOtherClient; //second client object that will store the second client we need to find
+	bool success = firm.retrieve(toFind, theClient); //check if we have the first client in the tree
+	success = firm.retrieve(toFind2, theOtherClient); //check if we have the second client in the tree
+	if (success) success = theClient->subtractFromAccount(acc, amount); //if we have both clients, try to subtract from the first client
+	if (success) { //if we were ableto subtract from the first client
+		theOtherClient->addToAccount(otherAcc, amount); //add to the second clients account
+		theClient->addToHistory(ID, acc, moveToID, amount, 'M'); //add this transaction to the first clients history
 	}
 	return success; //return the status of our mission
 }
