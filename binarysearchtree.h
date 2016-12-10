@@ -51,7 +51,7 @@ public:
 	bool insert(TBA); //inserts a TBA object into the tree (facade)
 	bool retrieve(TBA&, TBA*&); //retrieves a TBA item from the list and stores it in the TBA ref we passed in
 	void clear(); //kills the tree
-	string display() const; //displays the contents of the tree
+	void display() const; //displays the contents of the tree
 };
 #endif
 
@@ -117,8 +117,8 @@ void BinarySearchTree<TBA>::clear(Node* subtree) {
 }
 
 template<class TBA>
-string BinarySearchTree<TBA>::display() const {
-	return display(root);
+void BinarySearchTree<TBA>::display() const {
+	cout << display(root) << endl;
 }
 
 template<class TBA>
@@ -134,6 +134,6 @@ string BinarySearchTree<TBA>::display(Node* subtree) const{
 
 template<typename T2>
 ostream& operator<<(ostream& out, const BinarySearchTree<T2>& target) {
-	out << target.display() << endl;
+	out << target.display(target.root) << endl;
 	return out;
 }

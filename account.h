@@ -24,7 +24,7 @@ from that specific account.
 using namespace std;
 
 class Account {
-	friend ostream& operator<<(ostream&, const Account&);
+	friend ostream& operator<<(ostream&, const Account&); //friend class operator<<(), used for creating an output text for cout
 private:
 	int loseAccount[10]; //This is the array to keep track of the current account balance in all ten lose accounts
 	int initialBalance[10]; //This is the array to keep track of the inital balance in all ten of the lose accounts
