@@ -1,5 +1,5 @@
 /*File: transaction.cpp
-Monroe Shindelar and JJ Abides
+Monroe Shindelar and JJ Abides (Team salt)
 Professor Rob Nash
 CSS 342: Data Structures, Algorithms, and Discrete Math
 December 7, 2016
@@ -85,7 +85,15 @@ int Transaction::getAmount() const {
 	return amount;				//Returning the amount's value
 }
 
+/* Overloaded operator<<(): This overloaded operator<<() is a friend method from the ostream class. This method
+   creates a formatted output of all of the transaction object's data and stores it into the ostream object. Then
+   the ostream object is returned as a reference. The Transaction object is a const onject to prevent any changes
+   done to it.
+   Precondition: The rhs Transaction object is the desired Transaciton object for outputing
+   Postcondition: The rhs Transaction object's data has been properly formatted for the output and the ostream
+   object has been returned.
+*/
 ostream& operator<<(ostream& out, const Transaction& rhs) {
-	out << rhs.op << " " << rhs.ID << " " << rhs.amount << " " << rhs.getMoveToID() << endl;
-	return out;
+	out << rhs.op << " " << rhs.ID << " " << rhs.amount << " " << rhs.getMoveToID() << endl;	//Formatting the data by operation, ID, amount, and moveToID
+	return out;			//Return the output
 }

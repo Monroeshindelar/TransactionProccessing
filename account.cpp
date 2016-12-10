@@ -190,11 +190,11 @@ bool Account::addToAccount(int acc, int amount) {
    Postcondition: 'this' Account now contains the same balances as the rhs account
 */
 Account& Account::operator=(const Account& rhs) {
-	if (this != &rhs) {
-		for (int i = 0; i < 10; i++) {
-			initialBalance[i] = rhs.initialBalance[i];
-			loseAccount[i] = rhs.loseAccount[i];
+	if (this != &rhs) {									//If 'this' object is not the same as the argument
+		for (int i = 0; i < 10; i++) {					//Loop through each array
+			initialBalance[i] = rhs.initialBalance[i];	//Set 'this' initialBalance to rhs' intialBalance
+			loseAccount[i] = rhs.loseAccount[i];		//Set 'this' loseAccount to rhs' loseAccount
 		}
 	}
-	return *this;
+	return *this;										//Return 'this' Account object
 }
